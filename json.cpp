@@ -51,7 +51,7 @@ namespace taskcli::json {
 				buf[result] = 0;
 				return true;
 			} else {
-				if (BAD_JSON[tmp]) return false;
+				if (!std::isprint(tmp)) return false;
 				buf[result] = tmp;
 				result++;
 				literalBackslash = false;

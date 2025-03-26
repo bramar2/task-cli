@@ -6,13 +6,6 @@
 
 namespace taskcli::json {
 
-	inline consteval std::array<bool, 256> bad_json_arr() {
-		std::array<bool, 256> arr {};
-		arr['\n'] = arr['\b'] = arr['\r'] = arr['\t'] = arr['\f'] = true;
-		return arr;
-	}
-	inline constexpr std::array<bool, 256> BAD_JSON = bad_json_arr();
-
 	constexpr int TYPE_UNSIGNED = 0;
 	constexpr int TYPE_SIGNED = 1;
 	constexpr int TYPE_STR = 2;
