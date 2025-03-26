@@ -2,17 +2,16 @@
 #include "time.hpp"
 #include "table.hpp"
 
-#include <ranges>
-#include <unordered_set>
-#include <map>
-#include <unordered_map>
 #include <cstdint>
-#include <cstring>
-#include <iostream>
+#include <unordered_set>
+#include <unordered_map>
+#include <map>
 #include <vector>
-#include <string>
+
+#include <iostream>
 #include <fstream>
-#include <optional>
+
+#include <ranges>
 
 constexpr char HELP[] = 
 R"(Task CLI --- A CLI tool to manage all your tasks | github.com/bramar2/task-cli
