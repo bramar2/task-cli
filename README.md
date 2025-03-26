@@ -11,7 +11,7 @@ On root, run the following commands:
 The executable should be in build/task-cli.exe.
 
 ## Preview
-```cpp
+```
 Task CLI --- A CLI tool to manage all your tasks | github.com/bramar2/task-cli
 | task-cli add "Task description"               - Add a task and returns the Task ID.
 | task-cli update [ID] "New desc"               - Update task description.
