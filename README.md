@@ -1,7 +1,7 @@
 # task-cli:  A CLI tool to manage your tasks
 https://roadmap.sh/projects/task-tracker
 ## Code
-The project uses CMake. There is absolutely zero comments inside the project (bad practice), probably no one can understand this project (I'll probably forget after a week).
+The project uses CMake. There is absolutely zero comments inside the project (bad practice), probably no one can understand this project (I'll probably forget after a week). Also right now, it is not storing the data in JSON.
 ## Building
 On root, run the following commands:
 - `cmake -S . -B build/`
