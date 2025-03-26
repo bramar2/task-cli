@@ -2,9 +2,7 @@
 #include "status.hpp"
 
 #include <cstdint>
-#include <optional>
 #include <string>
-#include <ostream>
 
 namespace taskcli {
 	bool valid_description(std::string_view description);
@@ -22,9 +20,8 @@ namespace taskcli {
 		Task(Task&& other) noexcept;
 		void update_description(const std::string& new_description);
 		void update_status(Status new_status);
-		void serialize(std::ostream& stream) const;
-		static std::optional<Task> deserialize(const std::string& data);
 
 		Task& operator=(Task other);
+		bool operator==(const Task& other) const;
 	};
 }

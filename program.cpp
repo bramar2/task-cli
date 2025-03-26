@@ -1,8 +1,11 @@
 #include "task.hpp"
 #include "time.hpp"
 #include "table.hpp"
+#include "json.hpp"
+#include "jsontest.hpp"
 
 #include <cstdint>
+#include <cstdio>
 #include <unordered_set>
 #include <unordered_map>
 #include <map>
@@ -10,6 +13,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 
 #include <ranges>
 
@@ -26,7 +30,7 @@ R"(Task CLI --- A CLI tool to manage all your tasks | github.com/bramar2/task-cl
 | task-cli help					- Shows this help menu.
 )";
 
-constexpr char DATA_FILE[] = "task-cli.txt";
+constexpr char DATA_FILE[] = "task-cli.json";
 
 const std::unordered_map<std::string, size_t> COMMAND_ARGC {
 	{"add", 2},
@@ -48,51 +52,19 @@ const std::unordered_set<std::string> COMMAND_STATUS_ARG {
 	"mark", "list"
 };
 
-bool ignore_line(const std::string& line) {
-	for (char ch : line) {
-		if (ch == ' ') continue;
-		return (ch == '#'); // ignore if hashtag, otherwise (its not hashtag) then process
+bool load_data(std::map<uint64_t, taskcli::Task>& tasks) {
+	if (!std::filesystem::exists(DATA_FILE)) {
+		std::ofstream(DATA_FILE) << "[]";
+		return true;
 	}
-	return true;
-}
-
-void load_data(std::map<uint64_t, taskcli::Task>& tasks) {
 
 	std::ifstream in(DATA_FILE);
-	std::string line;
-	uint32_t error = 0;
-	while(std::getline(in, line)) {
-		if (ignore_line(line)) continue;
-
-		std::optional<taskcli::Task> task = taskcli::Task::deserialize(line);
-
-		if (task.has_value() && !tasks.count(task->id)) {
-			tasks.emplace(task->id, std::move(*task));
-		} else {
-			error++;
-		}
-	}
-	if (error > 0) {
-		std::cerr << "warning: ignored " << error << " invalid task data line while loading data.\n";
-	}
+	return taskcli::json::read(in, tasks);
 }
 
 void save_data(const std::map<uint64_t, taskcli::Task>& tasks) {
-
 	std::ofstream out(DATA_FILE);
-	out << "# Task CLI\n";
-	out << "# Updated on " << taskcli::formatted_time(taskcli::current_time()) << '\n';
-	for (const taskcli::Task& task : tasks | std::views::values) {
-		task.serialize(out);
-		out << '\n';
-	}
-}
-
-bool is_number(const std::string& str) {
-	for (char c : str) {
-		if (!std::isdigit(c)) return false;
-	}
-	return true;
+	taskcli::json::write(out, tasks);
 }
 
 void execute_cmd(const std::vector<std::string>& arguments,
@@ -119,7 +91,7 @@ void execute_cmd(const std::vector<std::string>& arguments,
  	if (COMMAND_ID_ARG.count(arguments[0])) {
 		index_id = 1;
 		try {
-			id = std::stoull(arguments[index_id]);
+			id = static_cast<uint64_t>(std::stoull(arguments[index_id]));
 			if (!tasks.count(id)) {
 				std::cerr << "error: no task found with ID " << id << '\n';
 				return;
@@ -263,7 +235,12 @@ int main(int argv, char **argc) {
 
 	bool terminalMode = false;
 	std::map<uint64_t, taskcli::Task> tasks;
-	load_data(tasks);
+	bool result = load_data(tasks);
+
+	if (!result) {
+		std::cerr << "error: failed to load data, possibly invalid json.\n";
+		return 1;
+	}
 	
 	std::string input;
 	while (true) {
