@@ -1,7 +1,7 @@
 # task-cli:  A CLI tool to manage your tasks
 https://roadmap.sh/projects/task-tracker
 ## Code
-The project uses CMake. There is practically no comments inside the project (bad practice), probably no one can understand this project (I'll probably forget after a week).
+The project uses CMake and C++23 standard. There is practically no comments inside the project (bad practice), probably no one can understand this project (I'll probably forget after a week).
 ## Building
 On root, run the following commands:
 - `cmake -S . -B build/`
